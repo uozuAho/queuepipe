@@ -9,7 +9,7 @@ END=None
 def main():
     input, output = make_pipeline([
         print_and_forward,
-        Pipeable(lambda x: do_io_bound_stuff(x, 1))
+        Pipeable(lambda x: do_io_bound_stuff(x, 1), parallelism=2),
     ])
     input.put('hello')
     input.put('i')
@@ -59,6 +59,8 @@ class Pipeable:
         while True:
             item = self.input.get()
             if item is END:
+                # ensure that all threads see the END
+                self.input.put(END)
                 break
             result = self.func(item)
             self.output.put(result)
