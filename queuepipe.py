@@ -10,6 +10,8 @@ def main():
     input, output = make_pipeline([
         print_and_forward,
         Pipeable(lambda x: do_io_bound_stuff(x, 1), parallelism=2),
+        i_return_many_args,
+        i_consume_many_args,
     ])
     input.put('hello')
     input.put('i')
@@ -31,6 +33,15 @@ def do_io_bound_stuff(message: str, delay: int):
     time.sleep(delay)
     print(f'do_io_bound_stuff: {message}, sleep over')
     return message
+
+
+def i_return_many_args(x):
+    return x, x, x
+
+
+def i_consume_many_args(a):
+    x, y, z = a
+    print(x, y, z)
 
 
 def make_pipeline(funcs: list) -> (Queue, Queue):
