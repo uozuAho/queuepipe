@@ -12,12 +12,12 @@ def main():
         Pipeable(lambda x: do_io_bound_stuff(x, 1))
     ])
     input.put('hello')
+    input.put('i')
+    input.put('like')
+    input.put('cheese')
+    input.put('and')
+    input.put('wine')
     input.put(END)
-    while True:
-        item = output.get()
-        print(f'read {item} from output')
-        if item is END:
-            break
 
 
 def print_and_forward(message: str) -> str:
