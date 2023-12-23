@@ -9,7 +9,7 @@ END=None
 def main():
     input, output = make_pipeline([
         print_and_forward,
-        lambda x: do_io_bound_stuff(x, 1)
+        Pipeable(lambda x: do_io_bound_stuff(x, 1))
     ])
     input.put('hello')
     input.put(END)
