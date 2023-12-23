@@ -48,23 +48,31 @@ def make_pipeline(funcs: list) -> (Queue, Queue):
 
 
 class Pipeable:
-    def __init__(self, func):
+    def __init__(self, func, parallelism=1):
         self.func = func
         self.input: Queue = None
         self.output: Queue = None
-        self.thread = threading.Thread(target=self.worker)
+        self.worker_threads = [threading.Thread(target=self.worker) for _ in range(parallelism)]
+        self.cleanup_thread = threading.Thread(target=self.cleanup)
 
     def worker(self):
         while True:
             item = self.input.get()
             if item is END:
-                self.output.put(END)
                 break
             result = self.func(item)
             self.output.put(result)
 
+    def cleanup(self):
+        for thread in self.worker_threads:
+            thread.join()
+        self.output.put(END)
+
     def start(self):
-        self.thread.start()
+        for thread in self.worker_threads:
+            thread.start()
+        self.cleanup_thread.start()
+
 
 
 if __name__ == '__main__':
