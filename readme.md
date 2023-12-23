@@ -22,22 +22,24 @@ a -> queue ----->  b  -----> queue -> c
 Using this demo:
 
 ```py
-input, output = make_pipeline([
+import queuepipe as qp
+
+input, output = qp.make_pipeline([
     a,
-    Pipeable(b, parallelism=3),
+    qp.Pipeable(b, parallelism=3),
     c
 ])
 
 for x in my_input_values: input.put(x)
 
 # you must signal the end of input, otherwise worker threads will run forever
-input.put(END)
+input.put(qp.END)
 
 # optionally get output
 while True:
     y = output.get()
     print(y)
-    if y is END:
+    if y is qp.END:
         break
 ```
 
