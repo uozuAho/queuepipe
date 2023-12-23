@@ -38,9 +38,34 @@ def make_pipeline(funcs: list) -> (Queue, Queue):
     input = first_input
     for func in funcs:
         output = Queue()
-        makepipeable(func, input, output)
+        if isinstance(func, Pipeable):
+            func.input = input
+            func.output = output
+            func.start()
+        else:
+            makepipeable(func, input, output)
         input = output
     return first_input, output
+
+
+class Pipeable:
+    def __init__(self, func):
+        self.func = func
+        self.input: Queue = None
+        self.output: Queue = None
+        self.thread = threading.Thread(target=self.worker)
+
+    def worker(self):
+        while True:
+            item = self.input.get()
+            if item is END:
+                self.output.put(END)
+                break
+            result = self.func(item)
+            self.output.put(result)
+
+    def start(self):
+        self.thread.start()
 
 
 def makepipeable(func, input: Queue, output: Queue):
