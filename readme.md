@@ -55,3 +55,6 @@ Be aware:
 # Also see
 - [pipe](https://pypi.org/project/pipe/): write `pipelines | like | this` in
   python. Synchronous.
+
+# to do 
+- document Collect()

@@ -46,3 +46,20 @@ class Pipeable:
         for thread in self.worker_threads:
             thread.start()
         self.cleanup_thread.start()
+
+
+class Collect(Pipeable):
+    """ Saves all inputs and sends them all to the output when END is received
+    """
+    def __init__(self):
+        super().__init__(None, 1)
+
+    def worker(self):
+        items = []
+        while True:
+            item = self.input.get()
+            if item is END:
+                self.output.put(items)
+                break
+            else:
+                items.append(item)

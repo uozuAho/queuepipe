@@ -8,6 +8,8 @@ def main():
         qp.Pipeable(lambda x: task_b(x, 1), parallelism=3),
         task_c,
         task_d,
+        qp.Collect(),
+        lambda x: print(f'collected outputs: {x}')
     )
     input.put('hello')
     input.put('i')
@@ -37,6 +39,7 @@ def task_c(x):
 def task_d(a):
     x, y, z = a
     print(f'task d: {x, y, z}')
+    return a
 
 
 if __name__ == '__main__':
