@@ -19,7 +19,7 @@ a -> queue ----->  b  -----> queue -> c
              --->  b  ---
 ```
 
-Using this demo:
+Using this demo (run an example with `python demo.py`)
 
 ```py
 import queuepipe as qp

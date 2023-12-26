@@ -4,10 +4,10 @@ import queuepipe as qp
 
 def main():
     input, output = qp.make_pipeline([
-        print_and_forward,
-        qp.Pipeable(lambda x: do_io_bound_stuff(x, 1), parallelism=2),
-        i_return_many_values,
-        i_consume_many_args,
+        task_a,
+        qp.Pipeable(lambda x: task_b(x, 1), parallelism=3),
+        task_c,
+        task_d,
     ])
     input.put('hello')
     input.put('i')
@@ -18,26 +18,25 @@ def main():
     input.put(qp.END)
 
 
-def print_and_forward(message: str) -> str:
-    print(f'print_and_forward: {message}')
-    print(message)
+def task_a(message: str) -> str:
+    print(f'task_a: {message}')
     return message
 
 
-def do_io_bound_stuff(message: str, delay: int):
-    print(f'do_io_bound_stuff: {message}')
+def task_b(message: str, delay: int):
+    print(f'task_b: {message}')
     time.sleep(delay)
-    print(f'do_io_bound_stuff: {message}, sleep over')
+    print(f'task_b: {message}, done')
     return message
 
 
-def i_return_many_values(x):
+def task_c(x):
     return x, x, x
 
 
-def i_consume_many_args(a):
+def task_d(a):
     x, y, z = a
-    print(x, y, z)
+    print(f'task d: {x, y, z}')
 
 
 if __name__ == '__main__':
