@@ -3,12 +3,12 @@ import queuepipe as qp
 
 
 def main():
-    input, output = qp.make_pipeline([
+    input, output = qp.make_pipeline(
         task_a,
         qp.Pipeable(lambda x: task_b(x, 1), parallelism=3),
         task_c,
         task_d,
-    ])
+    )
     input.put('hello')
     input.put('i')
     input.put('like')

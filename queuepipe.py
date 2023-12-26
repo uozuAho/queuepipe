@@ -5,7 +5,7 @@ import threading
 END=None
 
 
-def make_pipeline(funcs: list) -> (Queue, Queue):
+def make_pipeline(*funcs) -> (Queue, Queue):
     first_input = Queue()
     input = first_input
     for func in funcs:
