@@ -10,8 +10,8 @@ def make_pipeline(*funcs) -> (Queue, Queue):
     input = first_input
     for func in funcs:
         output = Queue()
-        if not isinstance(func, Pipeable):
-            func = Pipeable(func)
+        if not isinstance(func, Apply):
+            func = Apply(func)
         func.input = input
         func.output = output
         func.start()
@@ -19,7 +19,7 @@ def make_pipeline(*funcs) -> (Queue, Queue):
     return first_input, output
 
 
-class Pipeable:
+class Apply:
     def __init__(self, func, parallelism=1):
         self.func = func
         self.input: Queue = None
@@ -34,8 +34,11 @@ class Pipeable:
                 # ensure that all threads see the END
                 self.input.put(END)
                 break
-            result = self.func(item)
-            self.output.put(result)
+            try:
+                result = self.func(item)
+                self.output.put(result)
+            except Exception as e:
+                print(f'Exception "{e}", dropping input "{item}"')
 
     def cleanup(self):
         for thread in self.worker_threads:
@@ -48,7 +51,7 @@ class Pipeable:
         self.cleanup_thread.start()
 
 
-class Collect(Pipeable):
+class Collect(Apply):
     """ Saves all inputs and sends them all to the output when END is received
     """
     def __init__(self):

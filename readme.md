@@ -58,3 +58,4 @@ Be aware:
 
 # to do 
 - document Collect()
+- update docs with current code naming
