@@ -52,7 +52,8 @@ class Apply:
 
 
 class Collect(Apply):
-    """ Saves all inputs and sends them all to the output when END is received
+    """ Collects all inputs into a list and sends the list to the output when
+        END is received
     """
     def __init__(self):
         super().__init__(None, 1)
@@ -66,3 +67,21 @@ class Collect(Apply):
                 break
             else:
                 items.append(item)
+
+
+class Wait(Apply):
+    """ Buffers all inputs until END is received, then feeds them to the output
+    """
+    def __init__(self):
+        super().__init__(None, 1)
+
+    def worker(self):
+        buffer = []
+        while True:
+            item = self.input.get()
+            if item is END:
+                for x in buffer:
+                    self.output.put(x)
+                break
+            else:
+                buffer.append(item)

@@ -57,5 +57,5 @@ Be aware:
   python. Synchronous.
 
 # to do 
-- document Collect()
+- document Collect() & Wait()
 - update docs with current code naming
